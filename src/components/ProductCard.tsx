@@ -24,7 +24,7 @@ export default function ProductCard({ product }: { product: ProductType }) {
 
   return (
     <div className=' shadow-lg rounded-lg overflow-hidden flex flex-col '>
-      <Link href={`product/${product.id}`}>
+      <Link href={`products/${product.id}`}>
         <div className=' relative aspect-[2/3]'>
           <Image
             className=' object-cover hover:scale-105 transition-all duration-300'
@@ -66,7 +66,7 @@ export default function ProductCard({ product }: { product: ProductType }) {
             <div className='flex gap-2 items-center '>
               {product.colors.map((color) => (
                 <div
-                  onClick={(e) =>
+                  onClick={() =>
                     handelProductType({
                       type: 'color',
                       value: color.toLowerCase(),

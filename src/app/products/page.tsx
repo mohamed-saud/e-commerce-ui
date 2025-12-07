@@ -1,13 +1,15 @@
 import ProductList from '@/components/ProductList';
-import React from 'react';
+import React, { Suspense } from 'react';
 
-export default function ProductsPage() {
+export default function page() {
   return (
     <div className='py-4'>
-      <ProductList
-        category='all'
-        params='productspage'
-      />
+      <Suspense fallback={<div>Loading ...</div>}>
+        <ProductList
+          category='all'
+          params='productspage'
+        />
+      </Suspense>
     </div>
   );
 }
