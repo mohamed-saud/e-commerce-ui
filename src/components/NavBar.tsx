@@ -1,11 +1,14 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 import SearchBar from './SearchBar';
 import { Bell, Home } from 'lucide-react';
 import ShoppingCartIcon from './ShoppingCartIcon';
+import useCartStore from '@/stores/cartStore';
 
 export default function NavBar() {
+  const { cart } = useCartStore();
   return (
     <nav className=' w-full flex justify-between items-center border-b  border-gray-200 pb-4'>
       {/* LEFT */}
@@ -40,7 +43,7 @@ export default function NavBar() {
           <Bell className='w-4 h-4 text-gray-600' />
         </Link>
 
-        <ShoppingCartIcon cartNumber={0} />
+        <ShoppingCartIcon cartNumber={cart?.length ? cart.length : 0} />
         <Link
           className=' text-sm md:text-md font-medium'
           href={'/login'}>

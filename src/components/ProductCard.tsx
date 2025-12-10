@@ -5,6 +5,7 @@ import { ProductType } from '@/types';
 import { ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import useCartStore from '@/stores/cartStore';
 
 export default function ProductCard({ product }: { product: ProductType }) {
   const [productType, setProductType] = useState({
@@ -20,6 +21,15 @@ export default function ProductCard({ product }: { product: ProductType }) {
     value: string;
   }) {
     setProductType((state) => ({ ...state, [type]: value }));
+  }
+  const { addToCart } = useCartStore();
+  function handelAddToCart(product: ProductType) {
+    addToCart({
+      ...product,
+      quantity: 1,
+      selectedColor: productType.color,
+      selectedSize: productType.size,
+    });
   }
 
   return (
@@ -86,7 +96,9 @@ export default function ProductCard({ product }: { product: ProductType }) {
         {/* PRICE AND ADD TO CART BUTTON  */}
         <div className='flex items-center w-full justify-between gap-4'>
           <p className='text-xl font-semibold'>${product.price}</p>
-          <button className='ring ring-gray-200 text-black shadow-lg py-2 px-4 rounded-md text-sm cursor-pointer hover:bg-black hover:text-white flex items-center gap-1'>
+          <button
+            onClick={() => handelAddToCart(product)}
+            className='ring ring-gray-200 text-black shadow-lg py-2 px-4 rounded-md text-sm cursor-pointer hover:bg-black hover:text-white flex items-center gap-1'>
             <ShoppingCart />
             Add To Cart
           </button>
