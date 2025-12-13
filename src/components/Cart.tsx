@@ -72,9 +72,8 @@ export default function Cart() {
                         alt={item.shortDescription}
                         src={item.images[item.selectedColor]}
                         fill
-                        sizes='(max-width: 640px) 100vw,
-         (max-width: 1024px) 50vw,
-         33vw'
+                        loading='lazy'
+                        sizes='(widht:100% hight:100%)'
                         className='object-cover'
                       />
                     </div>

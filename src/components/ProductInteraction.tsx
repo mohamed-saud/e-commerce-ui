@@ -1,7 +1,7 @@
 'use client';
 import useCartStore from '@/stores/cartStore';
 import { ProductType } from '@/types';
-import { Plus, ShoppingCartIcon } from 'lucide-react';
+import { Minus, Plus, ShoppingCartIcon } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -18,23 +18,26 @@ export default function ProductInteraction({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const [quantity, setQuantity] = useState<number>(1);
   const { addToCart } = useCartStore();
   const [productType, setProductType] = useState({
     size: product.sizes[0],
     color: product.colors[0],
   });
 
+  //HANDEL ADD PRODUCT TO CART ----------
   function handelAddToCart(product: ProductType) {
     addToCart({
       ...product,
       cartId: Date.now().toString(),
-      quantity: 1,
+      quantity,
       selectedColor: productType.color,
       selectedSize: productType.size,
     });
     toast.success('Product added to cart');
   }
 
+  //HANDEL CHANGE COLOR AND SIZE ----------
   function handelProductTypes({
     type,
     value,
@@ -42,14 +45,22 @@ export default function ProductInteraction({
     type: 'size' | 'color';
     value: string;
   }) {
+    setQuantity(1);
     setProductType((state) => ({ ...state, [type]: value }));
-
     const params = new URLSearchParams(searchParams);
-
     params.set(type, value);
-
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   }
+
+  //HANDEL QUANTITY ----------
+  function handelQuantity({ type }: { type: 'incress' | 'decress' }) {
+    if (type === 'incress') {
+      setQuantity((state) => state + 1);
+    } else {
+      quantity > 1 && setQuantity((state) => state - 1);
+    }
+  }
+
   return (
     <>
       <h2 className='text-3xl font-semibold text-gray-900 '>{product.name}</h2>
@@ -91,6 +102,20 @@ export default function ProductInteraction({
               }`}></li>
           ))}
         </ul>
+      </div>
+      <div className='flex flex-col gap-2'>
+        <p className='text-sm font-medium text-gray-400'>Quantinty</p>
+        <div className='flex gap-2'>
+          <Minus
+            className='border border-gray-300 cursor-pointer'
+            onClick={() => handelQuantity({ type: 'decress' })}
+          />
+          <span>{quantity}</span>
+          <Plus
+            className='border border-gray-300 cursor-pointer'
+            onClick={() => handelQuantity({ type: 'incress' })}
+          />
+        </div>
       </div>
       <div className=' flex flex-col gap-4'>
         <button

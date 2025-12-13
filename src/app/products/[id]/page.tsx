@@ -1,6 +1,7 @@
 import ProductInteraction from '@/components/ProductInteraction';
 import { ProductType } from '@/types';
 import Image from 'next/image';
+import { describe } from 'node:test';
 
 const product: ProductType = {
   id: 1,
@@ -18,6 +19,18 @@ const product: ProductType = {
     green: '/products/1gr.png',
   },
 };
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { id: string };
+}) => {
+  //TODO THIS DATA WILL COME FORM API
+  return {
+    title: product.name,
+    describe: product.description,
+  };
+};
 export default async function page({
   params,
   searchParams,
@@ -25,19 +38,22 @@ export default async function page({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ color: string; size: string }>;
 }) {
+  const { id } = await params;
   const { size, color } = await searchParams;
   const selectedSize = size || (product.sizes[0] as string);
   const selectedColor = color || (product.colors[0] as string);
 
   return (
-    <div className=' flex flex-col md:flex-row gap-8 my-8'>
+    <div className=' flex flex-col md:flex-row gap-8 my-8 items-start'>
       {/* RIGHT  */}
       <div className='w-full lg:w-5/12  aspect-[2/3]  relative overflow-hidden '>
         <Image
           alt={product.name}
           src={product.images[selectedColor]}
           fill
+          loading='lazy'
           className=' object-contain rounded-md'
+          sizes='(widht:100% hight:100%)'
         />
       </div>
       {/* LEFT  */}
