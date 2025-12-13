@@ -6,6 +6,7 @@ import { ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import useCartStore from '@/stores/cartStore';
+import { toast } from 'react-toastify';
 
 export default function ProductCard({ product }: { product: ProductType }) {
   const [productType, setProductType] = useState({
@@ -26,10 +27,12 @@ export default function ProductCard({ product }: { product: ProductType }) {
   function handelAddToCart(product: ProductType) {
     addToCart({
       ...product,
+      cartId: Date.now().toString(),
       quantity: 1,
       selectedColor: productType.color,
       selectedSize: productType.size,
     });
+    toast.success('Product added to cart');
   }
 
   return (

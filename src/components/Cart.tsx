@@ -1,80 +1,30 @@
 'use client';
 
-import { CartItemsType } from '@/types';
-import { ArrowRight, Trash, Trash2, TrashIcon } from 'lucide-react';
+import { CartItemsType, ShippingFormInputs } from '@/types';
+import { ArrowRight, Trash2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ShippingForm from './ShippingForm';
 import PaymentForm from './PaymentForm';
 import { useState } from 'react';
 import Image from 'next/image';
 import useCartStore from '@/stores/cartStore';
+import { toast } from 'react-toastify';
 
 const steps = [
   { id: 1, title: 'Shopping Cart' },
   { id: 2, title: 'Shopping Address' },
   { id: 3, title: 'Payment Method' },
 ];
-const cartItems: CartItemsType = [
-  {
-    id: 1,
-    name: 'Adidas CoreFit T-Shirt',
-    shortDescription:
-      'Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.',
-    description:
-      'Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.',
-    price: 39.9,
-    sizes: ['s', 'm', 'l', 'xl', 'xxl'],
-    colors: ['gray', 'purple', 'green'],
-    images: {
-      gray: '/products/1g.png',
-      purple: '/products/1p.png',
-      green: '/products/1gr.png',
-    },
-    quantity: 1,
-    selectedSize: 'm',
-    selectedColor: 'gray',
-  },
-  {
-    id: 2,
-    name: 'Puma Ultra Warm Zip',
-    shortDescription:
-      'Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.',
-    description:
-      'Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.',
-    price: 59.9,
-    sizes: ['s', 'm', 'l', 'xl'],
-    colors: ['gray', 'green'],
-    images: { gray: '/products/2g.png', green: '/products/2gr.png' },
-    quantity: 1,
-    selectedSize: 'm',
-    selectedColor: 'gray',
-  },
-  {
-    id: 3,
-    name: 'Nike Air Essentials Pullover',
-    shortDescription:
-      'Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.',
-    description:
-      'Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.',
-    price: 69.9,
-    sizes: ['s', 'm', 'l'],
-    colors: ['green', 'blue', 'black'],
-    images: {
-      green: '/products/3gr.png',
-      blue: '/products/3b.png',
-      black: '/products/3bl.png',
-    },
-    quantity: 1,
-    selectedSize: 'm',
-    selectedColor: 'green',
-  },
-];
 export default function Cart() {
   const { cart, removeFromCart } = useCartStore();
   const searchParam = useSearchParams();
   const route = useRouter();
-  const [isShippingForm, setIsShippingForm] = useState(null);
+  const [isShippingForm, setIsShippingForm] = useState<ShippingFormInputs>();
   const activeStep = parseInt(searchParam.get('step') || '1');
+  function handelRemoveFromCart(item: CartItemsType[0]) {
+    removeFromCart(item);
+    toast.error('Product Reomve');
+  }
   return (
     <div className='flex flex-col items-center justify-center pt-12 gap-8'>
       {/* Title  */}
@@ -109,12 +59,12 @@ export default function Cart() {
           {/* SHIPPING CART  */}
           {activeStep === 1 ? (
             <div>
-              <h2 className='font-semibold text-lg'>Cart Items</h2>
+              <h2 className='font-semibold text-lg mb-4'>Cart Items</h2>
               {cart?.map((item) => (
                 // SINGLE CART ITEM
                 <div
                   key={item.id}
-                  className='flex items-center justify-between'>
+                  className='flex my-4  items-center justify-between'>
                   <div className='flex items-center gap-8'>
                     {/* PRODUCT IMAGE  */}
                     <div className=' relative  w-32 h-32 bg-gray-50 rounded-lg overflow-hidden'>
@@ -122,7 +72,10 @@ export default function Cart() {
                         alt={item.shortDescription}
                         src={item.images[item.selectedColor]}
                         fill
-                        className=' object-contain'
+                        sizes='(max-width: 640px) 100vw,
+         (max-width: 1024px) 50vw,
+         33vw'
+                        className='object-cover'
                       />
                     </div>
                     {/* PRODUCT DETAILS  */}
@@ -146,7 +99,7 @@ export default function Cart() {
                     </div>
                   </div>
                   <button
-                    onClick={() => removeFromCart(item)}
+                    onClick={() => handelRemoveFromCart(item)}
                     className='flex items-center bg-red-100 w-8 h-8 justify-center rounded-full text-red-600 cursor-pointer hover:bg-red-200'>
                     <Trash2 className=' w-4 h-4 ' />
                   </button>
@@ -173,7 +126,7 @@ export default function Cart() {
               <p className='  text-gray-500'>Subtotal</p>
               <p className=''>
                 $
-                {cartItems
+                {cart
                   .reduce((acc, item) => acc + item.price * item.quantity, 0)
                   .toFixed(2)}
               </p>
@@ -196,7 +149,7 @@ export default function Cart() {
               <p className='  text-gray-900'>Total</p>
               <p className=''>
                 $
-                {cartItems
+                {cart
                   .reduce((acc, item) => acc + item.price * item.quantity, 0)
                   .toFixed(2)}
               </p>

@@ -17,6 +17,7 @@ export type CartItemType = ProductType & {
     quantity: number;
     selectedSize: string;
     selectedColor: string;
+    cartId: string
 };
 
 export type CartItemsType = CartItemType[];

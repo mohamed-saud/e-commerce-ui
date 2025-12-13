@@ -1,14 +1,10 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import { Bell, Home } from 'lucide-react';
 import ShoppingCartIcon from './ShoppingCartIcon';
-import useCartStore from '@/stores/cartStore';
 
 export default function NavBar() {
-  const { cart } = useCartStore();
   return (
     <nav className=' w-full flex justify-between items-center border-b  border-gray-200 pb-4'>
       {/* LEFT */}
@@ -20,7 +16,7 @@ export default function NavBar() {
           src={'/logo.png'}
           width={36}
           height={46}
-          className='w-5 h-6 md:w-9 md:h-9'
+          className='w-auto h-auto md:w-auto md:h-auto'
           priority
         />
         <p className=' hidden md:block text-md font-medium tracking-wider'>
@@ -43,7 +39,7 @@ export default function NavBar() {
           <Bell className='w-4 h-4 text-gray-600' />
         </Link>
 
-        <ShoppingCartIcon cartNumber={cart?.length ? cart.length : 0} />
+        <ShoppingCartIcon />
         <Link
           className=' text-sm md:text-md font-medium'
           href={'/login'}>
